@@ -75,8 +75,8 @@ Describe how the project is structured or provide a link to a diagram in the `do
 
 ## 👥 Our Team
 
-  * **Rohit Badam** 
   * **Sophia Change**
+  * **Rohit Baddam** 
   * **Christopher Rodea**
 
 -----
