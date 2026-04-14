@@ -112,6 +112,13 @@ def train_and_display(model_name, age_diff, int_corr, attr, intel, fun, amb, sam
     input_df = pd.DataFrame(input_dict)
     output_pred = model.predict(input_df)
 
+    if output_num == 0:
+        output_pred = "Predicted not a match."
+    elif output_num == 1:
+        output_pred = "Predicted compatible match."
+    else:
+        output_pred = 'ERROR'
+
     return fig, output_pred
 
 def run_dashboard():
