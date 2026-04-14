@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 
 from sklearn.model_selection import train_test_split
@@ -8,7 +9,10 @@ from sklearn.metrics import roc_auc_score, roc_curve
 from dash import Dash, html, dcc, callback, Output, Input
 import plotly.express as px
 
-speed = pd.read_csv("Capstone_Team15/data/Speed Dating Data.csv", encoding="latin1")
+
+base_dir = os.path.dirname(os.path.abspath(__file__))
+data_path = os.path.join(base_dir, "..", "..", "data", "Speed Dating Data.csv")
+speed = pd.read_csv(data_path, encoding="latin1")
 
 features = ["age", "age_o", "samerace", "int_corr", "attr", "intel", "fun", "amb"]
 
