@@ -1,6 +1,6 @@
 # Latent Structures in Dating Preferences
 
-### NEED TO INCLUDE A BANNER/PICTURE HERE? (OPTIONAL)
+![Team 15 Capstone Banner](banner.png)
 
 ## 📌 Overview
 
@@ -14,62 +14,53 @@
 
 -----
 
-## 🛠 Tech Stack
-
-| Category | Technology |
-| :--- | :--- |
-| **Frontend** | Plotly? , Streamlit?, Redux? |
-| **Backend** | Node.js?, Express? Amazon hosting? |
-| **Database** | PostgreSQL?, MongoDB? |
-| **Infrastructure** | Docker?, AWS S3?, GitHub Actions? |
-
------
-
 ## 🚀 Getting Started
 
 ### Prerequisites
 
-Link to requirements.txt file in repo.
+This project relies on the following core libraries:
+
+- [Dash](https://dash.plotly.com/)
+- [Pandas](https://pandas.pydata.org/docs/)
+- [Scikit-learn](https://scikit-learn.org/stable/)
+- [Plotly](https://plotly.com/python/)
+- [Matplotlib](https://matplotlib.org/stable/)
+- [Seaborn](https://seaborn.pydata.org/)
+- [Numpy](https://numpy.org/doc/)
 
 
 ### Installation & Setup
 
-1.  Step 1
+1.  Step 1 - Clone the Repo
 
     ```bash
     git clone https://github.com/YourUsername/YourRepo.git
-    cd YourRepo
+    cd Capstone_Team15
     ```
 
-2.  Step 2
+2.  Step 2 (Optional) - Create and Activate a Virtual Environment
 
     ```bash
-    # For the backend
-    cd src/backend && npm install
+    # Windows
+    python -m venv .venv
+    .venv\Scripts\activate
 
-    # For the frontend
-    cd ../frontend && npm install
+    # Mac/Linux
+    python3 -m venv .venv
+    source .venv/bin/activate
     ```
 
-3.  Step 3
+3.  Step 3 - Install Dependencies
     
-    ```text
-    DATABASE_URL=your_db_url
-    API_KEY=your_secret_key
+    ```bash
+    pip install -r requirements.txt
     ```
 
-4.  Step 4
+4.  Step 4 - Run Dashboard
 
     ```bash
-    npm start
+    python main.py
     ```
-
------
-
-## 🏗 Architecture
-
-Describe how the project is structured or provide a link to a diagram in the `docs/` folder.
-
 
 -----
 
