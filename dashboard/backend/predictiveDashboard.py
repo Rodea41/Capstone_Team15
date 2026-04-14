@@ -9,31 +9,27 @@ from sklearn.metrics import roc_auc_score, roc_curve
 from dash import Dash, html, dcc, callback, Output, Input
 import plotly.express as px
 
+def load_data():
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    data_path = os.path.normpath(os.path.join(base_dir, "..", "..", "data", "Speed Dating Data.csv"))
+    speed = pd.read_csv(data_path, encoding="latin1")
 
-base_dir = os.path.dirname(os.path.abspath(__file__))
-data_path = os.path.join(base_dir, "..", "..", "data", "Speed Dating Data.csv")
-speed = pd.read_csv(data_path, encoding="latin1")
+    features = ["age", "age_o", "samerace", "int_corr", "attr", "intel", "fun", "amb"]
+    target = "match"
+    df_model = speed[features + [target]].dropna()
 
-features = ["age", "age_o", "samerace", "int_corr", "attr", "intel", "fun", "amb"]
+    # Feature Engineering
+    df_model["age_diff"] = abs(df_model["age"] - df_model["age_o"])
+    df_model = df_model.drop(columns=["age", "age_o"])
 
-target = "match"
-df_model = speed[features + [target]].dropna()
+    X = df_model.drop(columns=[target])
+    y = df_model[target]
+    return X, y
 
-# Feature Engineering
-df_model["age_diff"] = abs(df_model["age"] - df_model["age_o"])
-df_model = df_model.drop(columns=["age", "age_o"])
+X, y = load_data()
 
-X = df_model.drop(columns=[target])
-y = df_model[target]
+app = Dash(__name__)
 
-app = Dash()
-
-MODELS = {
-    "Logistic Regression": LogisticRegression,
-    "Random Forest": RandomForestClassifier,
-}
-
-# Requires Dash 2.17.0 or later
 app.layout = [
     html.H1(children="Predictive Model Dashboard", style={"textAlign": "center"}),
     dcc.Input(value=5.0, type="number", id="age_diff", min=0.0, max=60.0, step=1.0),
@@ -55,7 +51,6 @@ app.layout = [
     html.H4(children="ROC Curve"),
     dcc.Graph(id="graph"),
 ]
-
 
 @callback(
     Output("graph", "figure"),
@@ -109,8 +104,10 @@ def train_and_display(model_name, age_diff, int_corr, attr, intel, fun, amb, sam
     input_df = pd.DataFrame(input_dict)
     output_pred = model.predict(input_df)
 
-    return fig, output_pred
+    return fig, str(output_pred)
 
+def run_dashboard():
+    app.run(debug=True)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    run_dashboard()
