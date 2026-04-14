@@ -34,7 +34,7 @@ This project relies on the following core libraries:
 1.  Step 1 - Clone the Repo
 
     ```bash
-    git clone https://github.com/YourUsername/YourRepo.git
+    git clone https://github.com/Rodea41/Capstone_Team15.git
     cd Capstone_Team15
     ```
 
