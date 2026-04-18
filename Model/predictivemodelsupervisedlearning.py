@@ -19,7 +19,7 @@ from sklearn.metrics import classification_report, roc_auc_score, confusion_matr
 
 sns.set(style="whitegrid")
 
-speed = pd.read_csv("Speed Dating Data.csv", encoding="latin1")
+speed = pd.read_csv("../data/Speed Dating Data.csv", encoding="latin1")
 
 # Select Features and Clean Data
 features = [
@@ -110,6 +110,13 @@ grid_search = GridSearchCV(
 grid_search.fit(X_train, y_train)
 
 best_rf = grid_search.best_estimator_
+
+import joblib
+import os
+base_dir = os.path.dirname(os.path.abspath(__file__))
+model_path = os.path.join(base_dir, "match_model.joblib")
+joblib.dump(best_rf, model_path)
+print(f"Model saved to {model_path}")
 
 rf_pred = best_rf.predict(X_test)
 rf_prob = best_rf.predict_proba(X_test)[:, 1]
