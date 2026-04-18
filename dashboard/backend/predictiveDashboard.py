@@ -1,70 +1,171 @@
 import os
+import joblib
 import pandas as pd
 
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import roc_auc_score, roc_curve
-
 from dash import Dash, html, dcc, callback, Output, Input
-import plotly.express as px
+import plotly.graph_objects as go
 
-def load_data():
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    data_path = os.path.normpath(
-        os.path.join(base_dir, "..", "..", "data", "Speed Dating Data.csv")
-    )
-    speed = pd.read_csv(data_path, encoding="latin1")
+base_dir = os.path.dirname(os.path.abspath(__file__))
 
-    features = ["age", "age_o", "samerace", "int_corr", "attr", "intel", "fun", "amb"]
-    target = "match"
-    df_model = speed[features + [target]].dropna()
+model_path = os.path.normpath(
+    os.path.join(base_dir, "..", "..", "Model", "match_model.joblib")
+)
 
-    # Feature Engineering
-    df_model["age_diff"] = abs(df_model["age"] - df_model["age_o"])
-    df_model = df_model.drop(columns=["age", "age_o"])
+model = joblib.load(model_path)
 
-    X = df_model.drop(columns=[target])
-    y = df_model[target]
-    return X, y
-
-X, y = load_data()
+FEATURE_ORDER = ["samerace", "int_corr", "attr", "intel", "fun", "amb", "age_diff"]
 
 app = Dash(__name__)
 
-app.layout = [
-    html.H1(children="Predictive Model Dashboard", style={"textAlign": "center"}),
-    html.P("Please input numbers only for each item:"),
-    html.P(
-        "The values, from top to bottom, are age difference, number of shared interests, how important a potential partner's attractiveness is, how important a potential partner's intelligence is, how important a potential partner's fun-loving level is, how important a potential partner's ambition is, and if you and your partner are the same race."
-    ),
-    html.P(
-        "Age difference accepts values from 0 to 60. Shared interests goes from 0 to 20. Attractiveness, intelligence, fun, and ambition accepts values from 0 to 10 (0 is least important, 10 is most important). Same race accepts 0 (not the same) or 1 (same)."
-    ),
-    dcc.Input(value=5.0, type="number", id="age_diff", min=0.0, max=60.0, step=1.0),
-    dcc.Input(value=5.0, type="number", id="int_corr", min=0.0, max=20.0, step=1.0),
-    dcc.Input(value=5.0, type="number", id="attr", min=0.0, max=10.0, step=1.0),
-    dcc.Input(value=5.0, type="number", id="intel", min=0.0, max=10.0, step=1.0),
-    dcc.Input(value=5.0, type="number", id="fun", min=0.0, max=10.0, step=1.0),
-    dcc.Input(value=5.0, type="number", id="amb", min=0.0, max=10.0, step=1.0),
-    dcc.Input(value=0.0, type="number", id="samerace", min=0.0, max=1.0, step=1.0),
-    html.P("Select Model:"),
-    dcc.Dropdown(
-        id="dropdown",
-        options=["Logistic Regression", "Random Forest"],
-        value="Logistic Regression",
-        clearable=False,
-    ),
-    html.H4(children="Predicted Group from Text Input:"),
-    html.Div(id="result"),
-    html.H4(children="ROC Curve"),
-    dcc.Graph(id="graph"),
-]
+app.layout = html.Div(
+    [
+        html.H1("Predictive Model Dashboard", style={"textAlign": "center"}),
+
+        html.P(
+            "Enter values for the features below to estimate match compatibility.",
+            style={"textAlign": "center"}
+        ),
+
+        html.P(
+            "Age difference is the absolute age gap between two people. "
+            "Shared interest correlation ranges from -1 to 1. "
+            "Attractiveness, intelligence, fun, and ambition ratings range from 1 to 10. "
+            "Same race accepts 0 (not same) or 1 (same)."
+        ),
+
+        html.Br(),
+
+        html.Label("Age Difference"),
+        dcc.Input(
+            id="age_diff",
+            value=5.0,
+            type="number",
+            min=0.0,
+            max=60.0,
+            step=1.0,
+            style={"width": "100%"}
+        ),
+
+        html.Br(), html.Br(),
+
+        html.Label("Shared Interest Correlation"),
+        dcc.Input(
+            id="int_corr",
+            value=0.0,
+            type="number",
+            min=-1.0,
+            max=1.0,
+            step=0.05,
+            style={"width": "100%"}
+        ),
+
+        html.Br(), html.Br(),
+
+        html.Label("Attractiveness Rating"),
+        dcc.Input(
+            id="attr",
+            value=5.0,
+            type="number",
+            min=1.0,
+            max=10.0,
+            step=0.5,
+            style={"width": "100%"}
+        ),
+
+        html.Br(), html.Br(),
+
+        html.Label("Intelligence Rating"),
+        dcc.Input(
+            id="intel",
+            value=5.0,
+            type="number",
+            min=1.0,
+            max=10.0,
+            step=0.5,
+            style={"width": "100%"}
+        ),
+
+        html.Br(), html.Br(),
+
+        html.Label("Fun Rating"),
+        dcc.Input(
+            id="fun",
+            value=5.0,
+            type="number",
+            min=1.0,
+            max=10.0,
+            step=0.5,
+            style={"width": "100%"}
+        ),
+
+        html.Br(), html.Br(),
+
+        html.Label("Ambition Rating"),
+        dcc.Input(
+            id="amb",
+            value=5.0,
+            type="number",
+            min=1.0,
+            max=10.0,
+            step=0.5,
+            style={"width": "100%"}
+        ),
+
+        html.Br(), html.Br(),
+
+        html.Label("Same Race (0 = No, 1 = Yes)"),
+        dcc.Input(
+            id="samerace",
+            value=0,
+            type="number",
+            min=0,
+            max=1,
+            step=1,
+            style={"width": "100%"}
+        ),
+
+        html.Br(), html.Br(),
+
+        html.H4("Prediction"),
+        html.Div(id="result", style={"fontSize": "28px", "fontWeight": "bold"}),
+
+        html.Br(),
+
+        html.H4("Predicted Match Probability"),
+        html.Div(id="probability", style={"fontSize": "24px"}),
+
+        html.Br(),
+
+        html.H4("Interpretation"),
+        html.Div(id="interpretation", style={"fontSize": "18px"}),
+
+        html.Br(),
+
+        html.H4("Feature Inputs Used"),
+        html.Div(id="feature_table", style={"fontSize": "18px"}),
+
+        html.Br(),
+
+        html.H4("Model Note"),
+        html.Div(
+            id="disclaimer",
+            style={"fontSize": "16px", "fontStyle": "italic", "color": "#555"}
+        ),
+
+        html.Br(),
+
+        dcc.Graph(id="placeholder_graph"),
+    ],
+    style={"maxWidth": "1100px", "margin": "0 auto", "padding": "30px"},
+)
 
 @callback(
-    Output("graph", "figure"),
     Output("result", "children"),
-    Input("dropdown", "value"),
+    Output("probability", "children"),
+    Output("interpretation", "children"),
+    Output("feature_table", "children"),
+    Output("disclaimer", "children"),
+    Output("placeholder_graph", "figure"),
     Input("age_diff", "value"),
     Input("int_corr", "value"),
     Input("attr", "value"),
@@ -73,53 +174,71 @@ app.layout = [
     Input("amb", "value"),
     Input("samerace", "value"),
 )
-def train_and_display(model_name, age_diff, int_corr, attr, intel, fun, amb, samerace):
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42
-    )
+def predict_match(age_diff, int_corr, attr, intel, fun, amb, samerace):
+    input_df = pd.DataFrame([{
+        "samerace": samerace,
+        "int_corr": int_corr,
+        "attr": attr,
+        "intel": intel,
+        "fun": fun,
+        "amb": amb,
+        "age_diff": age_diff,
+    }])[FEATURE_ORDER]
 
-    if model_name == "Random Forest":
-        model = RandomForestClassifier(
-            max_depth=5, min_samples_leaf=1, min_samples_split=2, n_estimators=200
-        )
-    if model_name == "Logistic Regression":
-        model = LogisticRegression(max_iter=1000)
+    pred_num = int(model.predict(input_df)[0])
+    pred_prob = float(model.predict_proba(input_df)[0, 1])
 
-    model.fit(X_train, y_train)
-
-    y_prob = model.predict_proba(X_test)[:, 1]
-
-    fpr, tpr, _ = roc_curve(y_test, y_prob)
-    auc = roc_auc_score(y_test, y_prob)
-
-    fig = px.area(
-        x=fpr,
-        y=tpr,
-        title=f"ROC Curve (AUC={auc:.4f})",
-        labels=dict(x="False Positive Rate", y="True Positive Rate"),
-    )
-    fig.add_shape(type="line", line=dict(dash="dash"), x0=0, x1=1, y0=0, y1=1)
-
-    input_dict = {
-        "samerace": [samerace],
-        "int_corr": [int_corr],
-        "attr": [attr],
-        "intel": [intel],
-        "fun": [fun],
-        "amb": [amb],
-        "age_diff": [age_diff],
-    }
-    input_df = pd.DataFrame(input_dict)
-    output_pred = model.predict(input_df)
-
-    if output_num == 0:
-        output_pred = "Predicted not a match."
-    elif output_num == 1:
-        output_pred = "Predicted compatible match."
+    if pred_prob < 0.30:
+        result_text = html.Span("Low likelihood of match", style={"color": "#b02a37"})
+    elif pred_prob < 0.70:
+        result_text = html.Span("Moderate compatibility", style={"color": "#997404"})
     else:
-        output_pred = 'ERROR'
+        result_text = html.Span("High compatibility", style={"color": "#146c43"})
 
-    return fig, output_pred
+    prob_text = f"{pred_prob:.1%}"
+
+    interpretation_text = (
+        "This estimate is primarily influenced by fun and attractiveness, "
+        "which were the most important features in our trained models. "
+        "Shared interests and intelligence also contribute, while homophily-related "
+        "features such as same race and age difference had smaller effects."
+    )
+
+    feature_rows = html.Ul([
+        html.Li(f"{col}: {input_df.iloc[0][col]}") for col in FEATURE_ORDER
+    ])
+
+    disclaimer_text = (
+        "This prediction is based on patterns learned from historical speed dating data "
+        "and should be interpreted as a probabilistic estimate rather than a deterministic outcome."
+    )
+
+    fig = go.Figure(
+        go.Indicator(
+            mode="gauge+number",
+            value=pred_prob * 100,
+            title={"text": "Match Probability (%)"},
+            gauge={
+                "axis": {"range": [0, 100]},
+                "bar": {"thickness": 0.3},
+                "steps": [
+                    {"range": [0, 30], "color": "#f8d7da"},
+                    {"range": [30, 70], "color": "#fff3cd"},
+                    {"range": [70, 100], "color": "#d1e7dd"},
+                ],
+            },
+        )
+    )
+    fig.update_layout(height=400)
+
+    return (
+        result_text,
+        prob_text,
+        interpretation_text,
+        feature_rows,
+        disclaimer_text,
+        fig,
+    )
 
 def run_dashboard():
     app.run(debug=True)
