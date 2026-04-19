@@ -210,7 +210,6 @@ plt.title("ROC Curve Comparison")
 plt.legend()
 plt.show()
 
-# Quick Interpretation
 top_lr = importance.iloc[0]["feature"]
 top_rf = rf_importance.iloc[0]["feature"]
 
