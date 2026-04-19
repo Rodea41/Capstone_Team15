@@ -26,7 +26,7 @@ Our project used subsets of data derived from the sources below.
 * **Repository Access:** The specific subset of variables filtered for this analysis can be found at `data/hCMST_filtered.csv`. Data dictionaries defining the variables are available in the `docs/` folder.
 
 **3. OKCupid Dataset**
-* The raw OKCupid profile dataset was originally scraped and published with permission for educational use. It is publicly available for academic use on Kaggle. 
+* The raw OKCupid profile dataset was originally scraped and published with permission for educational use. It is publicly available for on Kaggle. 
 * **Original Source:** [OkCupid Profiles](https://www.kaggle.com/datasets/andrewmvd/okcupid-profiles)
 * **Repository Access:** The OKcupid dataset contains 60k rows and is 137.31MB in size. Due to GitHub file size limitations, it was not uploaded into this repository. The data dictionaries are provided in the `docs/` folder.
 
