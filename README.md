@@ -1,10 +1,16 @@
-# Latent Structures in Dating Preferences
-
 ![Team 15 Capstone Banner](banner.png)
+-----
+# Latent Structures in Dating Preferences
+**DELIVERABLES:**  
+- [REPORT](https://docs.google.com/document/d/19HwbzpF4ecT1vkXALm2eQIc1OIu7yf0AS7wpaemJvKk/edit?usp=sharing)
+- [VIDEO SUMMARY](placeholder)
+- [GITHUB REPOSITORY](https://github.com/Rodea41/Capstone_Team15/tree/main)
 
+-----
 ## 📌 Overview
 
-The code within this repo is tied to Team 15's 2026 MADS Capstone. It explores the dynamics of matchmaking by using machine learning to identify latent structures in dating preferences. It contains our python files that were used for the EDA and analysis mentioned in the written report. It also includes an interactive dashboard. 
+The code within this repo is tied to Team 15's 2026 MADS Capstone. It explores the dynamics of matchmaking by using machine learning to identify latent structures in dating preferences. It contains our python files that were used for the EDA and analysis mentioned in the written report. It also includes an interactive dashboard.
+
 
 ### **Machine Learning Techniques Utilized in Our Project**
 
