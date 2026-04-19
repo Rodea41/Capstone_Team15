@@ -59,25 +59,25 @@ print(classification_report(y_test, y_pred))
 print("\nROC-AUC")
 print(roc_auc_score(y_test, y_prob))
 
-# Confusion matrix
-cm = confusion_matrix(y_test, y_pred)
+# Confusion matrices
+fig, axes = plt.subplots(1, 2, figsize=(12, 4))
 
-plt.figure(figsize=(6,5))
-sns.heatmap(
-    cm,
-    annot=True,
-    fmt="d",
-    cmap="Blues",
-    xticklabels=["Predicted: No Match", "Predicted: Match"],
-    yticklabels=["Actual: No Match", "Actual: Match"]
-)
+labels = ["No Match", "Match"]
 
-plt.xlabel("Predicted Outcome")
-plt.ylabel("Actual Outcome")
-plt.title("Confusion Matrix (Match Prediction)")
+sns.heatmap(confusion_matrix(y_test, y_pred), annot=True, fmt="d", cmap="Blues",
+            xticklabels=labels, yticklabels=labels, ax=axes[0])
+axes[0].set_title("Logistic Regression")
+axes[0].set_xlabel("Predicted")
+axes[0].set_ylabel("Actual")
+
+sns.heatmap(confusion_matrix(y_test, rf_pred), annot=True, fmt="d", cmap="Greens",
+            xticklabels=labels, yticklabels=labels, ax=axes[1])
+axes[1].set_title("Random Forest")
+axes[1].set_xlabel("Predicted")
+axes[1].set_ylabel("Actual")
+
 plt.tight_layout()
 plt.show()
-
 # Feature Importance
 
 importance = pd.DataFrame({
