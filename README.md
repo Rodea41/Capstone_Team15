@@ -33,14 +33,14 @@ This project relies on the following core libraries:
 
 **1.  Clone the Repo**
 
-    ```bash
+```bash
     git clone https://github.com/Rodea41/Capstone_Team15.git
     cd Capstone_Team15
-    ```
+```
 
 **2.  (Optional) - Create and Activate a Virtual Environment**
 
-    ```bash
+```bash
     # Windows
     python -m venv .venv
     .venv\Scripts\activate
@@ -48,36 +48,39 @@ This project relies on the following core libraries:
     # Mac/Linux
     python3 -m venv .venv
     source .venv/bin/activate
-    ```
+```
 
 **3.  Install Dependencies**
     
-    ```bash
+```bash
     pip install -r requirements.txt
-    ```
+```
 
 ### Run Code | For Visuals
 
 **4.  Generate Visual**
 
-    Visuals for the supervised learning models:
-    ```bash
-    python Model/predictivemodelsupervisedlearning.py
-    ```
+Visuals for the supervised learning models:
 
-    Visuals for the homophily vs. latent trait analysis:
-    ```bash
+```bash
+    python Model/predictivemodelsupervisedlearning.py
+```
+
+Visuals for the homophily vs. latent trait analysis:
+
+```bash
     python Analysis/homophily_vs_latent_analysis.py
-    ```
+```
 
 ### Run Code | For Dashboard
 
 **5.  Run Dashboard**
 
-    ```bash
+```bash
     python main.py
-    ```
------
+```
+
+---
 
 ## 👥 Our Team
 
