@@ -31,14 +31,14 @@ This project relies on the following core libraries:
 
 ### Installation & Setup
 
-1.  Step 1 - Clone the Repo
+**1.  Clone the Repo**
 
     ```bash
     git clone https://github.com/Rodea41/Capstone_Team15.git
     cd Capstone_Team15
     ```
 
-2.  Step 2 (Optional) - Create and Activate a Virtual Environment
+**2.  (Optional) - Create and Activate a Virtual Environment**
 
     ```bash
     # Windows
@@ -50,18 +50,33 @@ This project relies on the following core libraries:
     source .venv/bin/activate
     ```
 
-3.  Step 3 - Install Dependencies
+**3.  Install Dependencies**
     
     ```bash
     pip install -r requirements.txt
     ```
 
-4.  Step 4 - Run Dashboard
+### Run Code | For Visuals
+
+**4.  Generate Visual**
+
+    Visuals for the supervised learning models:
+    ```bash
+    python Model/predictivemodelsupervisedlearning.py
+    ```
+
+    Visuals for the homophily vs. latent trait analysis:
+    ```bash
+    python Analysis/homophily_vs_latent_analysis.py
+    ```
+
+### Run Code | For Dashboard
+
+**5.  Run Dashboard**
 
     ```bash
     python main.py
     ```
-
 -----
 
 ## 👥 Our Team
