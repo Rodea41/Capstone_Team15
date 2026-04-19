@@ -60,7 +60,6 @@ print("\nROC-AUC")
 print(roc_auc_score(y_test, y_prob))
 
 # Confusion matrix
-# Confusion matrix
 cm = confusion_matrix(y_test, y_pred)
 
 plt.figure(figsize=(6,5))
