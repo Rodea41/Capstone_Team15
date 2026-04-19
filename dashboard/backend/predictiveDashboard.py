@@ -11,7 +11,7 @@ model_path = os.path.normpath(
     os.path.join(base_dir, "..", "..", "Model", "match_model.joblib")
 )
 
-model = joblib.load(model_path)
+model = joblib.load(model_path) #Had assistance from AI (ChatGPT) for loading model using joblib
 
 FEATURE_ORDER = ["samerace", "int_corr", "attr", "intel", "fun", "amb", "age_diff"]
 

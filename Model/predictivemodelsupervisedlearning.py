@@ -197,7 +197,7 @@ print("\nMATCH DISTRIBUTION")
 print(pd.Series(y_test).value_counts())
 print(pd.Series(y_test).value_counts(normalize=True))
 
-# Confusion matricies
+# Confusion matricies (had assistance from ChatGPT to make this look nice with regard to parameters for the sns.heatmap function calls)
 fig, axes = plt.subplots(1, 2, figsize=(12, 4))
 
 sns.heatmap(confusion_matrix(y_test, y_pred), annot=True, fmt="d", cmap="Blues", ax=axes[0])
