@@ -1,4 +1,12 @@
-df = pd.read_csv("data/combined_dataset_matching_features.csv")
+import pandas as pd
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent
+DATA_PATH = BASE_DIR.parent / "data" / "combined_dataset_matching_features.csv"
+if not DATA_PATH.exists():
+    raise FileNotFoundError(f"Could not find the dataset at {DATA_PATH}. Check your folder structure!")
+
+df = pd.read_csv(DATA_PATH)
 
 print(df.shape)
 print(df.columns.tolist())
