@@ -26,230 +26,232 @@ BASE_DIR = Path(__file__).resolve().parent
 REPO_ROOT = BASE_DIR.parent                
 DATA_PATH = REPO_ROOT / "data" / "Speed Dating Data.csv"
 MODEL_SAVE_PATH = BASE_DIR / "match_model.joblib"
-if not DATA_PATH.exists():
-    raise FileNotFoundError(f"Missing dataset! Expected it at: {DATA_PATH}")
 
-speed = pd.read_csv(DATA_PATH, encoding="latin1")
+if __name__ == "__main__":
+    if not DATA_PATH.exists():
+        raise FileNotFoundError(f"Missing dataset! Expected it at: {DATA_PATH}")
 
-
-# Select Features and Clean Data
-features = [
-    "age", "age_o",
-    "samerace",
-    "int_corr",
-    "attr", "intel", "fun", "amb"
-]
-
-target = "match"
-df_model = speed[features + [target]].dropna()
-
-# Feature Engineering
-df_model["age_diff"] = abs(df_model["age"] - df_model["age_o"])
-df_model = df_model.drop(columns=["age", "age_o"])
+    speed = pd.read_csv(DATA_PATH, encoding="latin1")
 
 
-X = df_model.drop(columns=[target])
-y = df_model[target]
+    # Select Features and Clean Data
+    features = [
+        "age", "age_o",
+        "samerace",
+        "int_corr",
+        "attr", "intel", "fun", "amb"
+    ]
 
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42
-)
+    target = "match"
+    df_model = speed[features + [target]].dropna()
 
-#Train Model and make Predictions
-model = LogisticRegression(max_iter=1000)
-model.fit(X_train, y_train)
-
-
-y_pred = model.predict(X_test)
-y_prob = model.predict_proba(X_test)[:, 1]
-
-#Evaluation metrics
-print("Classification Report")
-print(classification_report(y_test, y_pred))
-
-print("\nROC-AUC")
-print(roc_auc_score(y_test, y_prob))
+    # Feature Engineering
+    df_model["age_diff"] = abs(df_model["age"] - df_model["age_o"])
+    df_model = df_model.drop(columns=["age", "age_o"])
 
 
-# Feature Importance
+    X = df_model.drop(columns=[target])
+    y = df_model[target]
 
-importance = pd.DataFrame({
-    "feature": X.columns,
-    "coef": model.coef_[0]
-}).sort_values("coef", ascending=False)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42
+    )
 
-print("\nFeature Importance")
-print(importance)
-
-# Plot importance
-plt.figure(figsize=(6,4))
-sns.barplot(data=importance, x="coef", y="feature")
-plt.title("Feature Importance (Logistic Regression)")
-plt.show()
-
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import GridSearchCV
-from sklearn.metrics import classification_report, roc_auc_score, confusion_matrix, roc_curve
-
-#training model
-rf = RandomForestClassifier(random_state=42, class_weight="balanced")
-
-# had assistance from AI (ChatGPT) for the parameter grid and GridSearchCV
-param_grid = {
-    "n_estimators": [100, 200],
-    "max_depth": [5, 10, None],
-    "min_samples_split": [2, 5],
-    "min_samples_leaf": [1, 2]
-}
-
-grid_search = GridSearchCV(
-    estimator=rf,
-    param_grid=param_grid,
-    scoring="roc_auc",
-    cv=5,
-    n_jobs=-1,
-    verbose=1
-)
-
-grid_search.fit(X_train, y_train)
-
-best_rf = grid_search.best_estimator_
-
-import joblib
-import os
-base_dir = os.path.dirname(os.path.abspath(__file__))
-model_path = os.path.join(base_dir, "match_model.joblib")
-joblib.dump(best_rf, MODEL_SAVE_PATH)
-print(f"Model saved to {MODEL_SAVE_PATH}")
-# Had assistance from ChatGPT to save the model
-
-rf_pred = best_rf.predict(X_test)
-rf_prob = best_rf.predict_proba(X_test)[:, 1]
-
-#metrics
-
-print("RANDOM FOREST CLASSIFICATION REPORT")
-print(classification_report(y_test, rf_pred))
-
-print("\nRANDOM FOREST ROC-AUC")
-print(roc_auc_score(y_test, rf_prob))
-
-print("\nBEST RANDOM FOREST PARAMETERS")
-print(grid_search.best_params_)
-
-rf_cm = confusion_matrix(y_test, rf_pred)
-plt.figure(figsize=(5, 4))
-sns.heatmap(rf_cm, annot=True, fmt="d", cmap="Greens")
-plt.title("Random Forest Confusion Matrix")
-plt.xlabel("Predicted")
-plt.ylabel("Actual")
-plt.show()
-
-rf_importance = pd.DataFrame({
-    "feature": X.columns,
-    "importance": best_rf.feature_importances_
-}).sort_values("importance", ascending=False)
-
-#Feature importance
-print("\nRANDOM FOREST FEATURE IMPORTANCE")
-print(rf_importance)
-
-plt.figure(figsize=(6, 4))
-sns.barplot(data=rf_importance, x="importance", y="feature")
-plt.title("Feature Importance (Random Forest)")
-plt.show()
-
-baseline_fpr, baseline_tpr, _ = roc_curve(y_test, y_prob)
-rf_fpr, rf_tpr, _ = roc_curve(y_test, rf_prob)
+    #Train Model and make Predictions
+    model = LogisticRegression(max_iter=1000)
+    model.fit(X_train, y_train)
 
 
-# Confusion matrices
-fig, axes = plt.subplots(1, 2, figsize=(12, 4))
+    y_pred = model.predict(X_test)
+    y_prob = model.predict_proba(X_test)[:, 1]
 
-labels = ["No Match", "Match"]
+    #Evaluation metrics
+    print("Classification Report")
+    print(classification_report(y_test, y_pred))
 
-sns.heatmap(confusion_matrix(y_test, y_pred), annot=True, fmt="d", cmap="Blues",
-            xticklabels=labels, yticklabels=labels, ax=axes[0])
-axes[0].set_title("Logistic Regression")
-axes[0].set_xlabel("Predicted")
-axes[0].set_ylabel("Actual")
+    print("\nROC-AUC")
+    print(roc_auc_score(y_test, y_prob))
 
-sns.heatmap(confusion_matrix(y_test, rf_pred), annot=True, fmt="d", cmap="Greens",
-            xticklabels=labels, yticklabels=labels, ax=axes[1])
-axes[1].set_title("Random Forest")
-axes[1].set_xlabel("Predicted")
-axes[1].set_ylabel("Actual")
 
-plt.tight_layout()
-plt.show()
+    # Feature Importance
 
-#Plot of ROC-AUC curves
-plt.figure(figsize=(6, 5))
-plt.plot(baseline_fpr, baseline_tpr, label=f"Logistic Regression (AUC = {roc_auc_score(y_test, y_prob):.3f})")
-plt.plot(rf_fpr, rf_tpr, label=f"Random Forest (AUC = {roc_auc_score(y_test, rf_prob):.3f})")
-plt.plot([0, 1], [0, 1], linestyle="--")
-plt.xlabel("False Positive Rate")
-plt.ylabel("True Positive Rate")
-plt.title("ROC Curve Comparison")
-plt.legend()
-plt.show()
+    importance = pd.DataFrame({
+        "feature": X.columns,
+        "coef": model.coef_[0]
+    }).sort_values("coef", ascending=False)
 
-# Model Comparison Table
-lr_auc = roc_auc_score(y_test, y_prob)
-rf_auc = roc_auc_score(y_test, rf_prob)
+    print("\nFeature Importance")
+    print(importance)
 
-comparison = pd.DataFrame({
-    "Model": ["Logistic Regression", "Random Forest"],
-    "ROC-AUC": [lr_auc, rf_auc]
-})
+    # Plot importance
+    plt.figure(figsize=(6,4))
+    sns.barplot(data=importance, x="coef", y="feature")
+    plt.title("Feature Importance (Logistic Regression)")
+    plt.show()
 
-print("MODEL COMPARISON")
-print(comparison)
+    from sklearn.ensemble import RandomForestClassifier
+    from sklearn.model_selection import GridSearchCV
+    from sklearn.metrics import classification_report, roc_auc_score, confusion_matrix, roc_curve
 
-# Class Imbalance Check
-print("\nMATCH DISTRIBUTION")
-print(pd.Series(y_test).value_counts())
-print(pd.Series(y_test).value_counts(normalize=True))
+    #training model
+    rf = RandomForestClassifier(random_state=42, class_weight="balanced")
 
-# Confusion matricies (had assistance from ChatGPT to make this look nice with regard to parameters for the sns.heatmap function calls)
-fig, axes = plt.subplots(1, 2, figsize=(12, 4))
+    # had assistance from AI (ChatGPT) for the parameter grid and GridSearchCV
+    param_grid = {
+        "n_estimators": [100, 200],
+        "max_depth": [5, 10, None],
+        "min_samples_split": [2, 5],
+        "min_samples_leaf": [1, 2]
+    }
 
-sns.heatmap(confusion_matrix(y_test, y_pred), annot=True, fmt="d", cmap="Blues", ax=axes[0])
-axes[0].set_title("Logistic Regression")
+    grid_search = GridSearchCV(
+        estimator=rf,
+        param_grid=param_grid,
+        scoring="roc_auc",
+        cv=5,
+        n_jobs=-1,
+        verbose=1
+    )
 
-sns.heatmap(confusion_matrix(y_test, rf_pred), annot=True, fmt="d", cmap="Greens", ax=axes[1])
-axes[1].set_title("Random Forest")
+    grid_search.fit(X_train, y_train)
 
-plt.show()
+    best_rf = grid_search.best_estimator_
 
-# ROC Curve Comparison
-fpr_lr, tpr_lr, _ = roc_curve(y_test, y_prob)
-fpr_rf, tpr_rf, _ = roc_curve(y_test, rf_prob)
+    import joblib
+    import os
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    model_path = os.path.join(base_dir, "match_model.joblib")
+    joblib.dump(best_rf, MODEL_SAVE_PATH)
+    print(f"Model saved to {MODEL_SAVE_PATH}")
+    # Had assistance from ChatGPT to save the model
 
-plt.figure(figsize=(6,5))
-plt.plot(fpr_lr, tpr_lr, label=f"LR (AUC={lr_auc:.3f})")
-plt.plot(fpr_rf, tpr_rf, label=f"RF (AUC={rf_auc:.3f})")
-plt.plot([0,1],[0,1],'--')
-plt.xlabel("False Positive Rate")
-plt.ylabel("True Positive Rate")
-plt.title("ROC Curve Comparison")
-plt.legend()
-plt.show()
+    rf_pred = best_rf.predict(X_test)
+    rf_prob = best_rf.predict_proba(X_test)[:, 1]
 
-top_lr = importance.iloc[0]["feature"]
-top_rf = rf_importance.iloc[0]["feature"]
+    #metrics
 
-print("\nINTERPRETATION")
-print(f"Baseline ROC-AUC: {lr_auc:.3f}")
-print(f"Random Forest ROC-AUC: {rf_auc:.3f}")
+    print("RANDOM FOREST CLASSIFICATION REPORT")
+    print(classification_report(y_test, rf_pred))
 
-if rf_auc > lr_auc:
-    print("Random forest performs better → suggests nonlinear relationships.")
-else:
-    print("Similar performance → simple linear relationships capture most signal.")
+    print("\nRANDOM FOREST ROC-AUC")
+    print(roc_auc_score(y_test, rf_prob))
 
-print(f"Top logistic feature: {top_lr}")
-print(f"Top random forest feature: {top_rf}")
+    print("\nBEST RANDOM FOREST PARAMETERS")
+    print(grid_search.best_params_)
 
-print("\nConclusion:")
-print("Perceived partner traits (attr, fun, intel) tend to be stronger predictors than homophily variables (race, age).")
+    rf_cm = confusion_matrix(y_test, rf_pred)
+    plt.figure(figsize=(5, 4))
+    sns.heatmap(rf_cm, annot=True, fmt="d", cmap="Greens")
+    plt.title("Random Forest Confusion Matrix")
+    plt.xlabel("Predicted")
+    plt.ylabel("Actual")
+    plt.show()
+
+    rf_importance = pd.DataFrame({
+        "feature": X.columns,
+        "importance": best_rf.feature_importances_
+    }).sort_values("importance", ascending=False)
+
+    #Feature importance
+    print("\nRANDOM FOREST FEATURE IMPORTANCE")
+    print(rf_importance)
+
+    plt.figure(figsize=(6, 4))
+    sns.barplot(data=rf_importance, x="importance", y="feature")
+    plt.title("Feature Importance (Random Forest)")
+    plt.show()
+
+    baseline_fpr, baseline_tpr, _ = roc_curve(y_test, y_prob)
+    rf_fpr, rf_tpr, _ = roc_curve(y_test, rf_prob)
+
+
+    # Confusion matrices
+    fig, axes = plt.subplots(1, 2, figsize=(12, 4))
+
+    labels = ["No Match", "Match"]
+
+    sns.heatmap(confusion_matrix(y_test, y_pred), annot=True, fmt="d", cmap="Blues",
+                xticklabels=labels, yticklabels=labels, ax=axes[0])
+    axes[0].set_title("Logistic Regression")
+    axes[0].set_xlabel("Predicted")
+    axes[0].set_ylabel("Actual")
+
+    sns.heatmap(confusion_matrix(y_test, rf_pred), annot=True, fmt="d", cmap="Greens",
+                xticklabels=labels, yticklabels=labels, ax=axes[1])
+    axes[1].set_title("Random Forest")
+    axes[1].set_xlabel("Predicted")
+    axes[1].set_ylabel("Actual")
+
+    plt.tight_layout()
+    plt.show()
+
+    #Plot of ROC-AUC curves
+    plt.figure(figsize=(6, 5))
+    plt.plot(baseline_fpr, baseline_tpr, label=f"Logistic Regression (AUC = {roc_auc_score(y_test, y_prob):.3f})")
+    plt.plot(rf_fpr, rf_tpr, label=f"Random Forest (AUC = {roc_auc_score(y_test, rf_prob):.3f})")
+    plt.plot([0, 1], [0, 1], linestyle="--")
+    plt.xlabel("False Positive Rate")
+    plt.ylabel("True Positive Rate")
+    plt.title("ROC Curve Comparison")
+    plt.legend()
+    plt.show()
+
+    # Model Comparison Table
+    lr_auc = roc_auc_score(y_test, y_prob)
+    rf_auc = roc_auc_score(y_test, rf_prob)
+
+    comparison = pd.DataFrame({
+        "Model": ["Logistic Regression", "Random Forest"],
+        "ROC-AUC": [lr_auc, rf_auc]
+    })
+
+    print("MODEL COMPARISON")
+    print(comparison)
+
+    # Class Imbalance Check
+    print("\nMATCH DISTRIBUTION")
+    print(pd.Series(y_test).value_counts())
+    print(pd.Series(y_test).value_counts(normalize=True))
+
+    # Confusion matricies (had assistance from ChatGPT to make this look nice with regard to parameters for the sns.heatmap function calls)
+    fig, axes = plt.subplots(1, 2, figsize=(12, 4))
+
+    sns.heatmap(confusion_matrix(y_test, y_pred), annot=True, fmt="d", cmap="Blues", ax=axes[0])
+    axes[0].set_title("Logistic Regression")
+
+    sns.heatmap(confusion_matrix(y_test, rf_pred), annot=True, fmt="d", cmap="Greens", ax=axes[1])
+    axes[1].set_title("Random Forest")
+
+    plt.show()
+
+    # ROC Curve Comparison
+    fpr_lr, tpr_lr, _ = roc_curve(y_test, y_prob)
+    fpr_rf, tpr_rf, _ = roc_curve(y_test, rf_prob)
+
+    plt.figure(figsize=(6,5))
+    plt.plot(fpr_lr, tpr_lr, label=f"LR (AUC={lr_auc:.3f})")
+    plt.plot(fpr_rf, tpr_rf, label=f"RF (AUC={rf_auc:.3f})")
+    plt.plot([0,1],[0,1],'--')
+    plt.xlabel("False Positive Rate")
+    plt.ylabel("True Positive Rate")
+    plt.title("ROC Curve Comparison")
+    plt.legend()
+    plt.show()
+
+    top_lr = importance.iloc[0]["feature"]
+    top_rf = rf_importance.iloc[0]["feature"]
+
+    print("\nINTERPRETATION")
+    print(f"Baseline ROC-AUC: {lr_auc:.3f}")
+    print(f"Random Forest ROC-AUC: {rf_auc:.3f}")
+
+    if rf_auc > lr_auc:
+        print("Random forest performs better → suggests nonlinear relationships.")
+    else:
+        print("Similar performance → simple linear relationships capture most signal.")
+
+    print(f"Top logistic feature: {top_lr}")
+    print(f"Top random forest feature: {top_rf}")
+
+    print("\nConclusion:")
+    print("Perceived partner traits (attr, fun, intel) tend to be stronger predictors than homophily variables (race, age).")
