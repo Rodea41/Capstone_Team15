@@ -60,12 +60,23 @@ print("\nROC-AUC")
 print(roc_auc_score(y_test, y_prob))
 
 # Confusion matrix
+# Confusion matrix
 cm = confusion_matrix(y_test, y_pred)
-plt.figure(figsize=(5,4))
-sns.heatmap(cm, annot=True, fmt="d", cmap="Blues")
-plt.title("Confusion Matrix")
-plt.xlabel("Predicted")
-plt.ylabel("Actual")
+
+plt.figure(figsize=(6,5))
+sns.heatmap(
+    cm,
+    annot=True,
+    fmt="d",
+    cmap="Blues",
+    xticklabels=["Predicted: No Match", "Predicted: Match"],
+    yticklabels=["Actual: No Match", "Actual: Match"]
+)
+
+plt.xlabel("Predicted Outcome")
+plt.ylabel("Actual Outcome")
+plt.title("Confusion Matrix (Match Prediction)")
+plt.tight_layout()
 plt.show()
 
 # Feature Importance
@@ -91,6 +102,7 @@ from sklearn.metrics import classification_report, roc_auc_score, confusion_matr
 #training model
 rf = RandomForestClassifier(random_state=42, class_weight="balanced")
 
+# had assistance from AI (ChatGPT) for the parameter grid and GridSearchCV
 param_grid = {
     "n_estimators": [100, 200],
     "max_depth": [5, 10, None],
@@ -117,6 +129,7 @@ base_dir = os.path.dirname(os.path.abspath(__file__))
 model_path = os.path.join(base_dir, "match_model.joblib")
 joblib.dump(best_rf, model_path)
 print(f"Model saved to {model_path}")
+# Had assistance from ChatGPT to save the model
 
 rf_pred = best_rf.predict(X_test)
 rf_prob = best_rf.predict_proba(X_test)[:, 1]
