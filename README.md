@@ -21,18 +21,18 @@ The code within this repo is tied to Team 15's 2026 MADS Capstone. It explores t
 ### **Data Access Statement**
 Our project used subsets of data derived from the sources below. 
 
-**1. Columbia Speed Dating Dataset**
-*  The raw dataset was originally compiled by Ray Fisman and Sheena Iyengar from Columbia University. It is publicly available for academic use on Kaggle.
+**1. Columbia Speed Dating Dataset** \
+The raw dataset was originally compiled by Ray Fisman and Sheena Iyengar from Columbia University. It is publicly available for academic use on Kaggle.
 * **Original Source:** [Speed Dating Experiment](https://www.kaggle.com/datasets/annavictoria/speed-dating-experiment)
 * **Repository Access:** The preprocessed and binned version used for this project is available within this repository at `data/Columbia_filtered.csv`.
 
-**2. Stanford How Couples Meet and Stay Together (HCMST)**
-* The raw longitudinal survey data (`stanford-hCMST.tsv`) is maintained by Stanford University. It is avialable to use as long as you agree to not identify individuals, charge to distribute it to others, and cite their work.
+**2. Stanford How Couples Meet and Stay Together (HCMST)** \
+The raw longitudinal survey data (`stanford-hCMST.tsv`) is maintained by Stanford University. It is avialable to use as long as you agree to not identify individuals, charge to distribute it to others, and cite their work.
 * **Original Source:** [Stanford Data Portal](https://data.stanford.edu/hcmst)
 * **Repository Access:** The specific subset of variables filtered for this analysis can be found at `data/hCMST_filtered.csv`. Data dictionaries defining the variables are available in the `docs/` folder.
 
-**3. OKCupid Dataset**
-* The raw OKCupid profile dataset was originally scraped and published with permission for educational use. It is publicly available for on Kaggle. 
+**3. OKCupid Dataset** \
+The raw OKCupid profile dataset was originally scraped and published with permission for educational use. It is publicly available for on Kaggle. 
 * **Original Source:** [OkCupid Profiles](https://www.kaggle.com/datasets/andrewmvd/okcupid-profiles)
 * **Repository Access:** The OKcupid dataset contains 60k rows and is 137.31MB in size. Due to GitHub file size limitations, it was not uploaded into this repository. The data dictionaries are provided in the `docs/` folder.
 
