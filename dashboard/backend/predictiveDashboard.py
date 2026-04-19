@@ -20,7 +20,7 @@ app = Dash(__name__)
 app.layout = html.Div(
     [
         html.H1("Predictive Model Dashboard", style={"textAlign": "center"}),
-
+    
         html.P(
             "This is a predictive model that takes input representing a relationship between two users, for example same race is if they are the same race, age difference is calculated from each individual's age, shared interest correlation is calculated from each individual's interests etc, the rest is one person's perception of the other, and predicts the probability that they would match on a dating application.",
             style={"textAlign": "center"}
