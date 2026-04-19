@@ -12,6 +12,8 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
+from pathlib import Path
+import joblib
 
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
@@ -19,7 +21,16 @@ from sklearn.metrics import classification_report, roc_auc_score, confusion_matr
 
 sns.set(style="whitegrid")
 
-speed = pd.read_csv("../data/Speed Dating Data.csv", encoding="latin1")
+
+BASE_DIR = Path(__file__).resolve().parent  
+REPO_ROOT = BASE_DIR.parent                
+DATA_PATH = REPO_ROOT / "data" / "Speed Dating Data.csv"
+MODEL_SAVE_PATH = BASE_DIR / "match_model.joblib"
+if not DATA_PATH.exists():
+    raise FileNotFoundError(f"Missing dataset! Expected it at: {DATA_PATH}")
+
+speed = pd.read_csv(DATA_PATH, encoding="latin1")
+
 
 # Select Features and Clean Data
 features = [
@@ -59,25 +70,7 @@ print(classification_report(y_test, y_pred))
 print("\nROC-AUC")
 print(roc_auc_score(y_test, y_prob))
 
-# Confusion matrices
-fig, axes = plt.subplots(1, 2, figsize=(12, 4))
 
-labels = ["No Match", "Match"]
-
-sns.heatmap(confusion_matrix(y_test, y_pred), annot=True, fmt="d", cmap="Blues",
-            xticklabels=labels, yticklabels=labels, ax=axes[0])
-axes[0].set_title("Logistic Regression")
-axes[0].set_xlabel("Predicted")
-axes[0].set_ylabel("Actual")
-
-sns.heatmap(confusion_matrix(y_test, rf_pred), annot=True, fmt="d", cmap="Greens",
-            xticklabels=labels, yticklabels=labels, ax=axes[1])
-axes[1].set_title("Random Forest")
-axes[1].set_xlabel("Predicted")
-axes[1].set_ylabel("Actual")
-
-plt.tight_layout()
-plt.show()
 # Feature Importance
 
 importance = pd.DataFrame({
@@ -126,8 +119,8 @@ import joblib
 import os
 base_dir = os.path.dirname(os.path.abspath(__file__))
 model_path = os.path.join(base_dir, "match_model.joblib")
-joblib.dump(best_rf, model_path)
-print(f"Model saved to {model_path}")
+joblib.dump(best_rf, MODEL_SAVE_PATH)
+print(f"Model saved to {MODEL_SAVE_PATH}")
 # Had assistance from ChatGPT to save the model
 
 rf_pred = best_rf.predict(X_test)
@@ -168,6 +161,27 @@ plt.show()
 
 baseline_fpr, baseline_tpr, _ = roc_curve(y_test, y_prob)
 rf_fpr, rf_tpr, _ = roc_curve(y_test, rf_prob)
+
+
+# Confusion matrices
+fig, axes = plt.subplots(1, 2, figsize=(12, 4))
+
+labels = ["No Match", "Match"]
+
+sns.heatmap(confusion_matrix(y_test, y_pred), annot=True, fmt="d", cmap="Blues",
+            xticklabels=labels, yticklabels=labels, ax=axes[0])
+axes[0].set_title("Logistic Regression")
+axes[0].set_xlabel("Predicted")
+axes[0].set_ylabel("Actual")
+
+sns.heatmap(confusion_matrix(y_test, rf_pred), annot=True, fmt="d", cmap="Greens",
+            xticklabels=labels, yticklabels=labels, ax=axes[1])
+axes[1].set_title("Random Forest")
+axes[1].set_xlabel("Predicted")
+axes[1].set_ylabel("Actual")
+
+plt.tight_layout()
+plt.show()
 
 #Plot of ROC-AUC curves
 plt.figure(figsize=(6, 5))
