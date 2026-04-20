@@ -125,4 +125,4 @@ This project is licensed under the **[MIT/Apache/GPL]** License - see the [LICEN
 ## 🤖 Acknowledgments
 
 * The layout, formatting, and images used in this README were generated with the assistance of AI. The actual content was completed by members of Team 15
-* All other AI assistance (if any) is clearly cited within the python or Jupyter notebooks where it is used. 
+* All other AI assistance (if any) is cited within the python or Jupyter notebooks where it is used. 
