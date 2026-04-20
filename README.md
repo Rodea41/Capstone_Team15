@@ -3,7 +3,7 @@
 # Latent Structures in Dating Preferences
 **DELIVERABLES:**  
 - [REPORT](https://docs.google.com/document/d/19HwbzpF4ecT1vkXALm2eQIc1OIu7yf0AS7wpaemJvKk/edit?usp=sharing)
-- [VIDEO SUMMARY](https://drive.google.com/file/d/1Lyme5H0LmhZfROEkTBBnvvVXvIcPxYPq/view)
+- [VIDEO SUMMARY](https://drive.google.com/file/d/171VOOnd6k6EPaE_a5bk-NEakfCGKm3Pm/view?usp=drive_link)
 - [GITHUB REPOSITORY](https://github.com/Rodea41/Capstone_Team15/tree/main)
 
 ---
