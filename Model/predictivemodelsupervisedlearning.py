@@ -61,17 +61,24 @@ if __name__ == "__main__":
     model = LogisticRegression(max_iter=1000)
     model.fit(X_train, y_train)
 
+# Confusion matrices
+cm = confusion_matrix(y_test, y_pred)
 
-    y_pred = model.predict(X_test)
-    y_prob = model.predict_proba(X_test)[:, 1]
-
-    #Evaluation metrics
-    print("Classification Report")
-    print(classification_report(y_test, y_pred))
-
-    print("\nROC-AUC")
-    print(roc_auc_score(y_test, y_prob))
-
+plt.figure(figsize=(6,5))
+sns.heatmap(
+    cm,
+    annot=True,
+    fmt="d",
+    cmap="Blues",
+    xticklabels=["No Match", "Match"],
+    yticklabels=["No Match", "Match"]
+)
+plt.title("Confusion Matrix (Logistic Regression)")
+plt.xlabel("Predicted Outcome")
+plt.ylabel("Actual Outcome")
+plt.tight_layout()
+plt.show()
+# Feature Importance
 
     # Feature Importance
 
